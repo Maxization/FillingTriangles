@@ -30,8 +30,22 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ColorLabel = new System.Windows.Forms.Label();
+            this.TextureLoad = new System.Windows.Forms.Button();
+            this.radioButtonTexture = new System.Windows.Forms.RadioButton();
+            this.radioButtonConstTexture = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -40,12 +54,13 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80.875F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.125F));
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1184, 761);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(984, 561);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // pictureBox1
@@ -54,23 +69,163 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(951, 755);
+            this.pictureBox1.Size = new System.Drawing.Size(789, 555);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Controls.Add(this.groupBox1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.groupBox2, 0, 1);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(798, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 41.11111F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 58.88889F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 374F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(183, 555);
+            this.tableLayoutPanel2.TabIndex = 1;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.ColorLabel);
+            this.groupBox1.Controls.Add(this.TextureLoad);
+            this.groupBox1.Controls.Add(this.radioButtonTexture);
+            this.groupBox1.Controls.Add(this.radioButtonConstTexture);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(177, 68);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Object Color";
+            // 
+            // ColorLabel
+            // 
+            this.ColorLabel.AutoSize = true;
+            this.ColorLabel.BackColor = System.Drawing.Color.White;
+            this.ColorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.ColorLabel.Location = new System.Drawing.Point(80, 23);
+            this.ColorLabel.MinimumSize = new System.Drawing.Size(15, 15);
+            this.ColorLabel.Name = "ColorLabel";
+            this.ColorLabel.Size = new System.Drawing.Size(15, 15);
+            this.ColorLabel.TabIndex = 3;
+            this.ColorLabel.Click += new System.EventHandler(this.ColorLabel_Click);
+            // 
+            // TextureLoad
+            // 
+            this.TextureLoad.Location = new System.Drawing.Point(75, 41);
+            this.TextureLoad.Name = "TextureLoad";
+            this.TextureLoad.Size = new System.Drawing.Size(75, 23);
+            this.TextureLoad.TabIndex = 2;
+            this.TextureLoad.Text = "Load";
+            this.TextureLoad.UseVisualStyleBackColor = true;
+            this.TextureLoad.Click += new System.EventHandler(this.TextureLoad_Click);
+            // 
+            // radioButtonTexture
+            // 
+            this.radioButtonTexture.AutoSize = true;
+            this.radioButtonTexture.Checked = true;
+            this.radioButtonTexture.Location = new System.Drawing.Point(7, 44);
+            this.radioButtonTexture.Name = "radioButtonTexture";
+            this.radioButtonTexture.Size = new System.Drawing.Size(61, 17);
+            this.radioButtonTexture.TabIndex = 1;
+            this.radioButtonTexture.TabStop = true;
+            this.radioButtonTexture.Text = "Texture";
+            this.radioButtonTexture.UseVisualStyleBackColor = true;
+            this.radioButtonTexture.Click += new System.EventHandler(this.radioButtonTexture_Click);
+            // 
+            // radioButtonConstTexture
+            // 
+            this.radioButtonConstTexture.AutoSize = true;
+            this.radioButtonConstTexture.Location = new System.Drawing.Point(7, 20);
+            this.radioButtonConstTexture.Name = "radioButtonConstTexture";
+            this.radioButtonConstTexture.Size = new System.Drawing.Size(67, 17);
+            this.radioButtonConstTexture.TabIndex = 0;
+            this.radioButtonConstTexture.Text = "Constant";
+            this.radioButtonConstTexture.UseVisualStyleBackColor = true;
+            this.radioButtonConstTexture.Click += new System.EventHandler(this.radioButtonConstTexture_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.radioButton1);
+            this.groupBox2.Controls.Add(this.radioButton2);
+            this.groupBox2.Location = new System.Drawing.Point(3, 77);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(177, 100);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Vector N";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.White;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label1.Location = new System.Drawing.Point(90, 31);
+            this.label1.MinimumSize = new System.Drawing.Size(15, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(15, 15);
+            this.label1.TabIndex = 7;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(85, 49);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Load";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point(17, 52);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(61, 17);
+            this.radioButton1.TabIndex = 5;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Texture";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(17, 28);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(67, 17);
+            this.radioButton2.TabIndex = 4;
+            this.radioButton2.Text = "Constant";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 761);
+            this.ClientSize = new System.Drawing.Size(984, 561);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Form1";
             this.Text = "Form1";
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -79,6 +234,17 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButtonConstTexture;
+        private System.Windows.Forms.RadioButton radioButtonTexture;
+        private System.Windows.Forms.Button TextureLoad;
+        private System.Windows.Forms.Label ColorLabel;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton radioButton2;
     }
 }
 

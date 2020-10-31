@@ -23,10 +23,10 @@ namespace GK2
         public int MakeColor(int ObjColor, Vector3 L, double Il, double m)
         {
             Vector3 R = 2 * Vector3.Dot(N, L) * N - L;
-            double Io = (2f * ObjColor) / 255f - 1f;
-            double I = kd * Il * Io * Vector3.Dot(N, L) + ks * Il * Io * Math.Pow(Vector3.Dot(V, R), m);
+            double Io = ObjColor / 255f;
+            double I = kd * Il * Io * Math.Abs(Vector3.Dot(N, L)) + ks * Il * Io * Math.Abs(Math.Pow(Vector3.Dot(V, R), m));
             
-            int result = (int)(((I + 2f) * 255f) / (4f)); // <0,255>
+            int result = (int)((I * 255f) / (2f)); // <0,255>
             return result;
         }
 
