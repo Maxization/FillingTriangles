@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Schema;
 
 namespace GK2
 {
@@ -190,9 +191,10 @@ namespace GK2
     {
         const int MAX = 1000;
         public Color Color { get; set; }
+        double m;
         List<Edge> edges;
 
-        public Triangle(Vertex A, Vertex B, Vertex C, Color c)
+        public Triangle(Vertex A, Vertex B, Vertex C, Color c, double m)
         {
             Edge e1 = new Edge(A, B);
             Edge e2 = new Edge(B, C);
@@ -202,6 +204,7 @@ namespace GK2
             edges.Add(e2);
             edges.Add(e3);
             Color = c;
+            this.m = m;
         }
 
         public EdgeTable createET()
@@ -219,6 +222,7 @@ namespace GK2
                 if (e.A.Y < e.B.Y)
                 {
                     m = (double)(e.B.Y - e.A.Y) / (double)(e.B.X - e.A.X);
+                    
                     Ymax = e.B.Y;
                     Xmin = e.A.X;
                     ind = e.A.Y;
@@ -236,8 +240,6 @@ namespace GK2
                 else
                     m = 1.0 / m;
 
-                //Increment ind
-                ind++;
                 node = new NodeAET(Ymax, Xmin, m, null);
                 if(ET[ind] != null)
                 {
@@ -257,60 +259,74 @@ namespace GK2
                 e.Draw(b);
         }
 
-        public void Fill(Bitmap b, Color c)
+        public void Fill(Bitmap b, LambertColor lambert, Vector3 lightColor, Vector3 L)
         {
             EdgeTable ET = createET();
+
             int y=0;
-            int start = 0;
             for(int i=0;i<MAX;i++)
             {
                 if(ET[i] != null)
                 {
-                    start = i;
+                    y = i;
                     break;
                 }
             }
-            y = start;
             NodeAET AET = null;
 
-            AET = ET[y];
-            while (AET != null) 
+            while (AET != null || ET.Count!=0) 
             {
-                if(ET[y] != null && start != y)
+                if(ET[y] != null)
                 {
-                    AET.Add(ET[y]);
+                    if(AET == null)
+                    {
+                        AET = ET[y];
+                    }
+                    else
+                    {
+                        AET.Add(ET[y]);
+                    }
+                    ET.Delete(y);
                 }  
 
                 AET = AET.Sort();
 
                 using (Graphics g = Graphics.FromImage(b))
                 {
-                    Pen pen = new Pen(c, 1);
 
                     NodeAET node1 = AET;
                     NodeAET node2 = AET.next;
                     while (node1 != null && node2 != null)
                     {
-                        g.DrawLine(pen, (int)node1.X, y, (int)node2.X, y);
+                        int R = lambert.MakeColor(Color.R, L, lightColor.X, m);
+                        int G = lambert.MakeColor(Color.G, L, lightColor.Y, m);
+                        int B = lambert.MakeColor(Color.B, L, lightColor.Z, m);
+
+                        Color newColor = Color.FromArgb(R, G, B);
+
+                        Brush brush = new SolidBrush(newColor);
+                        
+                        int xMin = (int)node1.X;
+                        int xMax = (int)node2.X;
+                        for(int i=xMin;i<=xMax;i++)
+                        {
+                            g.FillRectangle(brush, i, y, 1, 1);
+                        }
+                        
                         node1 = node2.next;
                         if(node1 != null)
                             node2 = node1.next;
                     }
-
-                    pen.Dispose();
                 }
 
-                AET = AET.Delete(y);
                 y++;
+                AET = AET.Delete(y);
+                
                 if(AET != null)
                 {
                     AET.UpdateX();
                 }  
             }
-            
-
-
-            
         }
     }
 
@@ -354,7 +370,7 @@ namespace GK2
             this.M = M;
             Triangles = new List<Triangle>();
             vertices = new Vertex[N + 1, M + 1];
-            rnd = new Random();
+            rnd = new Random(10);
         }
 
         private double Distance(Point a, Point b)
@@ -388,19 +404,12 @@ namespace GK2
         {
             return Color.FromArgb(rnd.Next(0, 255), rnd.Next(0, 255), rnd.Next(0, 255));
         }
-        public void Fill(Bitmap b, Color color)
-        {
-            foreach(Triangle tri in Triangles)
-            {
-                tri.Fill(b, color);
-            }
-        }
 
-        public void CreateGrid(int width, int height)
+        public void CreateGrid(int width, int height, double m)
         {
             width -= 40;
             height -= 20;
-            //N - wysokosc
+
             int w = width / M;
             int h = height / N;
 
@@ -415,18 +424,18 @@ namespace GK2
                 {
                     vertices[i + 1, j] = new Vertex(j * w +20, (i + 1) * h + 15);
 
-                    Triangle tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], RandomColor());
+                    Triangle tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], RandomColor(), m);
                     Triangles.Add(tri);
                     if(j!=0)
                     {
-                        tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], RandomColor());
+                        tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], RandomColor(), m);
                         Triangles.Add(tri);
-                        tri = new Triangle(vertices[i, j], vertices[i + 1, j], vertices[i + 1, j - 1], RandomColor());
+                        tri = new Triangle(vertices[i, j], vertices[i + 1, j], vertices[i + 1, j - 1], RandomColor(), m);
                         Triangles.Add(tri);
                         if (j == M - 1)
                         {
                             vertices[i + 1, j + 1] = new Vertex((j + 1) * w + 20, (i + 1) * h + 15);
-                            tri = new Triangle(vertices[i + 1, j], vertices[i + 1, j + 1], vertices[i, j + 1], RandomColor());
+                            tri = new Triangle(vertices[i + 1, j], vertices[i + 1, j + 1], vertices[i, j + 1], RandomColor(), m);
                             Triangles.Add(tri);
                         }
                     }

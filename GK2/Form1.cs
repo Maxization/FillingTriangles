@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Numerics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,26 +15,31 @@ namespace GK2
         Bitmap drawArea;
         TriangleGrid grid;
         Vertex movingV;
+        LambertColor lambert;
+        Vector3 lightColor;
+        Vector3 L;
         bool dragV;
         public Form1()
         {
             dragV = false;
             
-
             InitializeComponent();
             drawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
             grid = new TriangleGrid(5, 5);
-            grid.CreateGrid(pictureBox1.Width, pictureBox1.Height);
+            lambert = new LambertColor(0.5, 0.5, new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+            lightColor = new Vector3(1, 0, 0);
+            L = new Vector3(0, 0, 1);
+            grid.CreateGrid(pictureBox1.Width, pictureBox1.Height, 50);
             UpdateArea();
         }
 
         void UpdateArea()
         {
             Bitmap newArea = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-
-            foreach(Triangle tri in grid.Triangles)
+            
+            foreach (Triangle tri in grid.Triangles)
             {
-                tri.Fill(newArea, MakeColor(tri.Color));
+                tri.Fill(newArea, lambert, lightColor, L);
             }
             grid.Draw(newArea);
             pictureBox1.Image = newArea;
@@ -79,8 +83,8 @@ namespace GK2
             Vector3 L = new Vector3(0, 0, 1);
             Vector3 N = new Vector3(0, 0, 1);
             Vector3 V = new Vector3(0, 0, 1);
-            float k = 2 * Vector3.Dot(N, L);
-            Vector3 R = Vector3.Multiply(k, N) * N - L;
+            double k = 2 * Vector3.Dot(N, L);
+            Vector3 R = k * N * N - L;
             int m = 50;
 
             return (float)(kd * Il * Io * Vector3.Dot(N, L) + ks * Il * Io * Math.Pow(AngleBetween(V, R), m));
@@ -93,7 +97,7 @@ namespace GK2
 
             Vector3 v = new Vector3(R, G, B);
 
-            v = Vector3.Normalize(v);
+            v.Normalize();
 
             return Color.FromArgb(ConvertIToC(v.X), ConvertIToC(v.Y), ConvertIToC(v.Z));
         }
