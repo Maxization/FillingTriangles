@@ -15,6 +15,7 @@ namespace GK2
     {
         Bitmap drawArea;
         Bitmap texture;
+        Bitmap normalMap;
         Bitmap beforeMove;
         TriangleGrid grid;
         Triangle[] trianglesToUpdate;
@@ -32,16 +33,17 @@ namespace GK2
             InitializeComponent();
             drawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
             texture = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+            normalMap = new Bitmap(Resources.normal_map);
             InitializeTexture(Resources.Funny_Cat);
-            pictureBox1.Image = drawArea;
+            pictureBox1.Image = texture;
             grid = new TriangleGrid(5, 5);
             L = new Vector3(0, 0, 1);
             N = new Vector3(0, 0, 1);
-            lambert = new LambertColor(1, 1, N, new Vector3(0, 0, 1));
-            lightColor = new Vector3(1, 0, 0);
+            lambert = new LambertColor(0.5, 0.5, 50, N, new Vector3(0, 0, 1));
+            lightColor = new Vector3(1, 1, 1);
             objectColor = Color.White;
             objectsHaveColor = false;
-            grid.CreateGrid(pictureBox1.Width, pictureBox1.Height, 1, objectColor, objectsHaveColor);
+            grid.CreateGrid(pictureBox1.Width, pictureBox1.Height, objectColor, objectsHaveColor);
             UpdateArea();
         }
 
@@ -140,18 +142,27 @@ namespace GK2
             }        
         }
 
-        private void ColorLabel_Click(object sender, EventArgs e)
+        private bool PickColor(out Color color)
         {
             ColorDialog myDialog = new ColorDialog();
-
+            color = new Color();
             myDialog.AllowFullOpen = true;
 
-            if(myDialog.ShowDialog() == DialogResult.OK)
+            if (myDialog.ShowDialog() == DialogResult.OK)
             {
-                objectColor = myDialog.Color;
-                ColorLabel.BackColor = objectColor;
+                color = myDialog.Color;
+                return true;
             }
-
+            return false;
+        }
+        private void ColorLabel_Click(object sender, EventArgs e)
+        {
+            Color newColor;
+            if(PickColor(out newColor))
+            {
+                ColorLabel.BackColor = newColor;
+                objectColor = newColor;
+            }          
             grid.ChangeColor(objectColor);
             UpdateArea();
         }
@@ -181,11 +192,48 @@ namespace GK2
             UpdateArea();
         }
 
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            TrackBar bar = sender as TrackBar;
+            double value = bar.Value / 100f;
+            lambert.ChangeKD(value);
+        }
+
+        private void trackBar1_MouseUp(object sender, MouseEventArgs e)
+        {
+            UpdateArea();
+        }
+
+        private void trackBar2_ValueChanged(object sender, EventArgs e)
+        {
+            TrackBar bar = sender as TrackBar;
+            double value = bar.Value / 100f;
+            lambert.ChangeKS(value);
+        }
+
+        private void trackBar3_ValueChanged(object sender, EventArgs e)
+        {
+            TrackBar bar = sender as TrackBar;
+            lambert.ChangeM(bar.Value);
+        }
+
+        private void LightColorLabel_Click(object sender, EventArgs e)
+        {
+            Color newColor;
+            if(PickColor(out newColor))
+            {
+                LightColorLabel.BackColor = newColor;
+                lightColor.X = newColor.R / 255f;
+                lightColor.Y = newColor.G / 255f;
+                lightColor.Z = newColor.B / 255f;
+            }
+            UpdateArea();
+        }
+
         private void radioButtonTexture_Click(object sender, EventArgs e)
         {
             objectsHaveColor = false;
-            grid.SwitchColor(objectsHaveColor);
-            UpdateArea();
+            grid.SwitchColor(objectsHaveColor);    
         }
     }
 }

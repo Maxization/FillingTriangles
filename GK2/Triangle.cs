@@ -190,11 +190,10 @@ namespace GK2
     class Triangle
     {
         const int MAX = 1000;
-        double m;
         List<Edge> edges;
         public bool OwnColor { get; set; }
         public Color Color { get; set; }
-        public Triangle(Vertex A, Vertex B, Vertex C, Color c, double m, bool ownColor)
+        public Triangle(Vertex A, Vertex B, Vertex C, Color c, bool ownColor)
         {
             Edge e1 = new Edge(A, B);
             Edge e2 = new Edge(B, C);
@@ -204,7 +203,6 @@ namespace GK2
             edges.Add(e2);
             edges.Add(e3);
             Color = c;
-            this.m = m;
             this.OwnColor = ownColor;
         }
 
@@ -310,7 +308,7 @@ namespace GK2
                     for (int i = xMin; i <= xMax; i++)
                     {
                         Color color;
-                        if(!OwnColor)
+                        if (!OwnColor)
                         {
                             color = b.GetPixel(i, y);
                         }
@@ -318,9 +316,9 @@ namespace GK2
                         {
                             color = Color;
                         }
-                        int R = lambert.MakeColor(color.R, L, lightColor.X, m);
-                        int G = lambert.MakeColor(color.G, L, lightColor.Y, m);
-                        int B = lambert.MakeColor(color.B, L, lightColor.Z, m);
+                        int R = lambert.MakeColor(color.R, L, lightColor.X);
+                        int G = lambert.MakeColor(color.G, L, lightColor.Y);
+                        int B = lambert.MakeColor(color.B, L, lightColor.Z);
 
                         Color newColor = Color.FromArgb(R, G, B);
                         b.SetPixel(i, y, newColor);
@@ -332,8 +330,8 @@ namespace GK2
 
                 y++;
                 AET = AET.Delete(y);
-                
-                if(AET != null)
+
+                if (AET != null)
                 {
                     AET.UpdateX();
                 }  
@@ -440,7 +438,7 @@ namespace GK2
             }
         }
 
-        public void CreateGrid(int width, int height, double m, Color color, bool ownColor)
+        public void CreateGrid(int width, int height, Color color, bool ownColor)
         {
             Clear();
             width -= 40;
@@ -460,18 +458,16 @@ namespace GK2
                 {
                     vertices[i + 1, j] = new Vertex(j * w +20, (i + 1) * h + 15);
 
-                    Triangle tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], color, m, ownColor);
+                    Triangle tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], color, ownColor);
                     Triangles.Add(tri);
                     if(j!=0)
                     {
-                        tri = new Triangle(vertices[i, j], vertices[i, j + 1], vertices[i + 1, j], color, m, ownColor);
-                        Triangles.Add(tri);
-                        tri = new Triangle(vertices[i, j], vertices[i + 1, j], vertices[i + 1, j - 1], color, m, ownColor);
+                        tri = new Triangle(vertices[i, j], vertices[i + 1, j], vertices[i + 1, j - 1], color, ownColor);
                         Triangles.Add(tri);
                         if (j == M - 1)
                         {
                             vertices[i + 1, j + 1] = new Vertex((j + 1) * w + 20, (i + 1) * h + 15);
-                            tri = new Triangle(vertices[i + 1, j], vertices[i + 1, j + 1], vertices[i, j + 1], color, m, ownColor);
+                            tri = new Triangle(vertices[i + 1, j], vertices[i + 1, j + 1], vertices[i, j + 1], color, ownColor);
                             Triangles.Add(tri);
                         }
                     }
