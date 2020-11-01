@@ -316,9 +316,9 @@ namespace GK2
                         {
                             color = Color;
                         }
-                        int R = lambert.MakeColor(color.R, L, lightColor.X);
-                        int G = lambert.MakeColor(color.G, L, lightColor.Y);
-                        int B = lambert.MakeColor(color.B, L, lightColor.Z);
+                        int R = lambert.MakeColor(color.R, L, lightColor.X, i, y);
+                        int G = lambert.MakeColor(color.G, L, lightColor.Y, i, y);
+                        int B = lambert.MakeColor(color.B, L, lightColor.Z, i, y);
 
                         Color newColor = Color.FromArgb(R, G, B);
                         b.SetPixel(i, y, newColor);

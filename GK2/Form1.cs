@@ -15,7 +15,6 @@ namespace GK2
     {
         Bitmap drawArea;
         Bitmap texture;
-        Bitmap normalMap;
         Bitmap beforeMove;
         TriangleGrid grid;
         Triangle[] trianglesToUpdate;
@@ -23,7 +22,7 @@ namespace GK2
         LambertColor lambert;
         Color objectColor;
         Vector3 lightColor;
-        Vector3 L, N;
+        Vector3 L;
         bool dragV;
         bool objectsHaveColor;
         public Form1()
@@ -31,15 +30,10 @@ namespace GK2
             dragV = false;
             
             InitializeComponent();
-            drawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
-            texture = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
-            normalMap = new Bitmap(Resources.normal_map);
-            InitializeTexture(Resources.Funny_Cat);
-            pictureBox1.Image = texture;
+            texture = InitializeBitmap(new Bitmap(Resources.Funny_Cat, pictureBox1.Width, pictureBox1.Height));
             grid = new TriangleGrid(5, 5);
             L = new Vector3(0, 0, 1);
-            N = new Vector3(0, 0, 1);
-            lambert = new LambertColor(0.5, 0.5, 50, N, new Vector3(0, 0, 1));
+            lambert = new LambertColor(0.5, 0.5, 0, Resources.normal_map, new Vector3(0, 0, 1));
             lightColor = new Vector3(1, 1, 1);
             objectColor = Color.White;
             objectsHaveColor = false;
@@ -87,18 +81,20 @@ namespace GK2
             drawArea = newArea;
         }
 
-        void InitializeTexture(Bitmap b)
+        Bitmap InitializeBitmap(Bitmap b)
         {
+            Bitmap result = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             int width = b.Width;
             int height = b.Height;
-            for(int i=0;i<drawArea.Height;i++)
+            for(int i=0;i<result.Height;i++)
             {
-                for(int j=0;j<drawArea.Width;j++)
+                for(int j=0;j<result.Width;j++)
                 {
                     Color color = b.GetPixel(j % width, i % height);
-                    texture.SetPixel(j, i, color);
+                    result.SetPixel(j, i, color);
                 }
             }
+            return result;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -167,8 +163,9 @@ namespace GK2
             UpdateArea();
         }
 
-        private void TextureLoad_Click(object sender, EventArgs e)
+        bool LoadImage(out Bitmap result)
         {
+            result = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
@@ -178,18 +175,31 @@ namespace GK2
                 {
                     radioButtonTexture.Checked = true;
                     string filePath = openFileDialog.FileName;
-                    Bitmap Texture = new Bitmap(filePath);
-                    InitializeTexture(Texture);
-                    UpdateArea();
+                    result = new Bitmap(filePath);
+                    return true;
                 }
+            }
+            return false;
+        }
+
+        private void TextureLoad_Click(object sender, EventArgs e)
+        {
+            Bitmap newTexture;
+            if(LoadImage(out newTexture))
+            {
+                texture = InitializeBitmap(new Bitmap(newTexture, pictureBox1.Width, pictureBox1.Height));
+                radioButtonTexture.Checked = true;
             }
         }
 
-        private void radioButtonConstTexture_Click(object sender, EventArgs e)
+        private void normalMapLoad_Click(object sender, EventArgs e)
         {
-            objectsHaveColor = true;
-            grid.SwitchColor(objectsHaveColor);
-            UpdateArea();
+            Bitmap newNormalMap;
+            if(LoadImage(out newNormalMap))
+            {
+                lambert.ChangeNormalMap(newNormalMap);
+                radioButtonNormalMap.Checked = true;
+            }
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
@@ -230,10 +240,45 @@ namespace GK2
             UpdateArea();
         }
 
-        private void radioButtonTexture_Click(object sender, EventArgs e)
+        private void radioButtonNormalMap_CheckedChanged(object sender, EventArgs e)
         {
-            objectsHaveColor = false;
-            grid.SwitchColor(objectsHaveColor);    
+            RadioButton button = sender as RadioButton;
+            if (button.Checked)
+            {
+                lambert.ChangeConstantN(false);
+                UpdateArea();
+            }
+        }
+
+        private void radioButtonTexture_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = sender as RadioButton;
+            if(button.Checked)
+            {
+                objectsHaveColor = false;
+                grid.SwitchColor(objectsHaveColor);
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = sender as RadioButton;
+            if (button.Checked)
+            {
+                lambert.ChangeConstantN(true);
+                UpdateArea();
+            }
+        }
+
+        private void radioButtonConstTexture_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = sender as RadioButton;
+            if (button.Checked)
+            {
+                objectsHaveColor = true;
+                grid.SwitchColor(objectsHaveColor);
+                UpdateArea();
+            }
         }
     }
 }
