@@ -41,14 +41,21 @@
             this.radioButtonNormalMap = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.LightColorLabel = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.trackBar3 = new System.Windows.Forms.TrackBar();
             this.label3 = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.animateButton = new System.Windows.Forms.Button();
+            this.LightColorLabel = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.normalFill = new System.Windows.Forms.RadioButton();
+            this.interpolationFill = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -58,6 +65,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -96,14 +105,17 @@
             this.tableLayoutPanel2.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.groupBox2, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.groupBox3, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.groupBox4, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.groupBox5, 0, 4);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(798, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 4;
+            this.tableLayoutPanel2.RowCount = 5;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 49.375F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.625F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 159F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 223F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 118F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 83F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 179F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(183, 555);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
@@ -116,7 +128,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(177, 79);
+            this.groupBox1.Size = new System.Drawing.Size(177, 80);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Object Color";
@@ -172,7 +184,7 @@
             this.groupBox2.Controls.Add(this.normalMapLoad);
             this.groupBox2.Controls.Add(this.radioButtonNormalMap);
             this.groupBox2.Controls.Add(this.radioButton2);
-            this.groupBox2.Location = new System.Drawing.Point(3, 88);
+            this.groupBox2.Location = new System.Drawing.Point(3, 89);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(177, 81);
             this.groupBox2.TabIndex = 1;
@@ -193,7 +205,7 @@
             // 
             this.radioButtonNormalMap.AutoSize = true;
             this.radioButtonNormalMap.Checked = true;
-            this.radioButtonNormalMap.Location = new System.Drawing.Point(17, 52);
+            this.radioButtonNormalMap.Location = new System.Drawing.Point(7, 49);
             this.radioButtonNormalMap.Name = "radioButtonNormalMap";
             this.radioButtonNormalMap.Size = new System.Drawing.Size(61, 17);
             this.radioButtonNormalMap.TabIndex = 5;
@@ -205,7 +217,7 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(17, 28);
+            this.radioButton2.Location = new System.Drawing.Point(7, 26);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(67, 17);
             this.radioButton2.TabIndex = 4;
@@ -215,8 +227,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.LightColorLabel);
-            this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.trackBar3);
             this.groupBox3.Controls.Add(this.label3);
@@ -224,34 +234,12 @@
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.trackBar1);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox3.Location = new System.Drawing.Point(3, 175);
+            this.groupBox3.Location = new System.Drawing.Point(3, 177);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(177, 153);
+            this.groupBox3.Size = new System.Drawing.Size(177, 112);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Coefficients";
-            // 
-            // LightColorLabel
-            // 
-            this.LightColorLabel.AutoSize = true;
-            this.LightColorLabel.BackColor = System.Drawing.Color.White;
-            this.LightColorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.LightColorLabel.Location = new System.Drawing.Point(105, 115);
-            this.LightColorLabel.MinimumSize = new System.Drawing.Size(15, 15);
-            this.LightColorLabel.Name = "LightColorLabel";
-            this.LightColorLabel.Size = new System.Drawing.Size(15, 15);
-            this.LightColorLabel.TabIndex = 8;
-            this.LightColorLabel.Click += new System.EventHandler(this.LightColorLabel_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label5.Location = new System.Drawing.Point(14, 112);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(85, 20);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Light Color";
             // 
             // label4
             // 
@@ -324,6 +312,99 @@
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             this.trackBar1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBar1_MouseUp);
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.button1);
+            this.groupBox4.Controls.Add(this.animateButton);
+            this.groupBox4.Controls.Add(this.LightColorLabel);
+            this.groupBox4.Controls.Add(this.label5);
+            this.groupBox4.Location = new System.Drawing.Point(3, 295);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(177, 77);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Light";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(88, 51);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Stop";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // animateButton
+            // 
+            this.animateButton.Location = new System.Drawing.Point(7, 51);
+            this.animateButton.Name = "animateButton";
+            this.animateButton.Size = new System.Drawing.Size(75, 23);
+            this.animateButton.TabIndex = 11;
+            this.animateButton.Text = "Animate";
+            this.animateButton.UseVisualStyleBackColor = true;
+            this.animateButton.Click += new System.EventHandler(this.animateButton_Click);
+            // 
+            // LightColorLabel
+            // 
+            this.LightColorLabel.AutoSize = true;
+            this.LightColorLabel.BackColor = System.Drawing.Color.White;
+            this.LightColorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.LightColorLabel.Location = new System.Drawing.Point(104, 19);
+            this.LightColorLabel.MinimumSize = new System.Drawing.Size(15, 15);
+            this.LightColorLabel.Name = "LightColorLabel";
+            this.LightColorLabel.Size = new System.Drawing.Size(15, 15);
+            this.LightColorLabel.TabIndex = 10;
+            this.LightColorLabel.Click += new System.EventHandler(this.LightColorLabel_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label5.Location = new System.Drawing.Point(13, 16);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(85, 20);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Light Color";
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.interpolationFill);
+            this.groupBox5.Controls.Add(this.normalFill);
+            this.groupBox5.Location = new System.Drawing.Point(3, 378);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(177, 100);
+            this.groupBox5.TabIndex = 4;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Fill Color";
+            // 
+            // normalFill
+            // 
+            this.normalFill.AutoSize = true;
+            this.normalFill.Location = new System.Drawing.Point(7, 28);
+            this.normalFill.Name = "normalFill";
+            this.normalFill.Size = new System.Drawing.Size(58, 17);
+            this.normalFill.TabIndex = 0;
+            this.normalFill.TabStop = true;
+            this.normalFill.Text = "Normal";
+            this.normalFill.UseVisualStyleBackColor = true;
+            // 
+            // interpolationFill
+            // 
+            this.interpolationFill.AutoSize = true;
+            this.interpolationFill.Location = new System.Drawing.Point(7, 51);
+            this.interpolationFill.Name = "interpolationFill";
+            this.interpolationFill.Size = new System.Drawing.Size(83, 17);
+            this.interpolationFill.TabIndex = 1;
+            this.interpolationFill.TabStop = true;
+            this.interpolationFill.Text = "Interpolation";
+            this.interpolationFill.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -347,6 +428,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -372,8 +457,15 @@
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TrackBar trackBar3;
+        private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label LightColorLabel;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button animateButton;
+        private System.Windows.Forms.Button button1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton interpolationFill;
+        private System.Windows.Forms.RadioButton normalFill;
     }
 }
 

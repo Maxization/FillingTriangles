@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -176,9 +177,9 @@ namespace GK2
             this.B = b;
         }
 
-        public void Draw(Bitmap b)
+        public void Draw(DirectBitmap b)
         {
-            using (Graphics g = Graphics.FromImage(b))
+            using (Graphics g = Graphics.FromImage(b.Bitmap))
             {
                 Pen pen = new Pen(Color.Black, 1);
                 g.DrawLine(pen, A, B);
@@ -261,13 +262,13 @@ namespace GK2
             return ET;
         }
 
-        public void Draw(Bitmap b)
+        public void Draw(DirectBitmap b)
         {
             foreach (Edge e in edges)
                 e.Draw(b);
         }
 
-        public void Fill(Bitmap b, LambertColor lambert, Vector3 lightColor, Vector3 L)
+        public void Fill(DirectBitmap b, LambertColor lambert, Vector3 lightColor, Vector3 L)
         {
             EdgeTable ET = createET();
 
@@ -281,7 +282,6 @@ namespace GK2
                 }
             }
             NodeAET AET = null;
-
             while (AET != null || ET.Count!=0) 
             {
                 if(ET[y] != null)
@@ -316,13 +316,32 @@ namespace GK2
                         {
                             color = Color;
                         }
-                        int R = lambert.MakeColor(color.R, L, lightColor.X, i, y);
-                        int G = lambert.MakeColor(color.G, L, lightColor.Y, i, y);
-                        int B = lambert.MakeColor(color.B, L, lightColor.Z, i, y);
+                        int R = lambert.MakeColor(color.R, lightColor.X, i, y);
+                        int G = lambert.MakeColor(color.G, lightColor.Y, i, y);
+                        int B = lambert.MakeColor(color.B, lightColor.Z, i, y);
 
                         Color newColor = Color.FromArgb(R, G, B);
                         b.SetPixel(i, y, newColor);
                     }
+
+                    //Parallel.For(xMin, xMax + 1, (x) =>
+                    //    {
+                    //        Color color;
+                    //        if (!OwnColor)
+                    //        {
+                    //            color = b.GetPixel(x, y);
+                    //        }
+                    //        else
+                    //        {
+                    //            color = Color;
+                    //        }
+                    //        int R = lambert.MakeColor(color.R, lightColor.X, x, y);
+                    //        int G = lambert.MakeColor(color.G, lightColor.Y, x, y);
+                    //        int B = lambert.MakeColor(color.B, lightColor.Z, x, y);
+
+                    //        Color newColor = Color.FromArgb(R, G, B);
+                    //        b.SetPixel(x, y, newColor);
+                    //    });
                     node1 = node2.next;
                     if (node1 != null)
                         node2 = node1.next;
@@ -430,7 +449,7 @@ namespace GK2
             return tri.ToArray();
         }
 
-        public void Draw(Bitmap b)
+        public void Draw(DirectBitmap b)
         {
             foreach(Triangle tri in Triangles)
             {

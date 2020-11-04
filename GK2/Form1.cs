@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,9 +14,9 @@ namespace GK2
 {
     public partial class Form1 : Form
     {
-        Bitmap drawArea;
-        Bitmap texture;
-        Bitmap beforeMove;
+        DirectBitmap drawArea;
+        DirectBitmap texture;
+        DirectBitmap beforeMove;
         TriangleGrid grid;
         Triangle[] trianglesToUpdate;
         Vertex movingV;
@@ -30,20 +31,35 @@ namespace GK2
             dragV = false;
             
             InitializeComponent();
-            texture = InitializeBitmap(new Bitmap(Resources.Funny_Cat, pictureBox1.Width, pictureBox1.Height));
+            Bitmap bm = new Bitmap(Resources.Funny_Cat, pictureBox1.Width, pictureBox1.Height);
+            texture = ConvertBitmap(bm);
             grid = new TriangleGrid(5, 5);
             L = new Vector3(0, 0, 1);
-            lambert = new LambertColor(0.5, 0.5, 0, Resources.normal_map, new Vector3(0, 0, 1));
+            bm = new Bitmap(Resources.normal_map, 250, 250);
+            lambert = new LambertColor(0.5, 0.5, 0, ConvertBitmap(bm), new Vector3(0, 0, 1));
             lightColor = new Vector3(1, 1, 1);
             objectColor = Color.White;
             objectsHaveColor = false;
             grid.CreateGrid(pictureBox1.Width, pictureBox1.Height, objectColor, objectsHaveColor);
+            drawArea = new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Image = drawArea.Bitmap;
             UpdateArea();
         }
 
-        Bitmap GetBitmapWithout(Triangle[] triangles)
+        DirectBitmap ConvertBitmap(Bitmap b)
         {
-            Bitmap newArea = new Bitmap(texture);
+            DirectBitmap dBm = new DirectBitmap(b.Width, b.Height);
+
+            using (Graphics g = Graphics.FromImage(dBm.Bitmap))
+            {
+                g.DrawImage(b, 0, 0);
+            }
+            return dBm;
+        }
+
+        DirectBitmap GetBitmapWithout(Triangle[] triangles)
+        {
+            DirectBitmap newArea = texture.Copy();
             foreach(Triangle tri in grid.Triangles)
             {
                 if(!triangles.Contains(tri))
@@ -54,47 +70,34 @@ namespace GK2
             }
             return newArea;
         }
+
         void UpdateArea()
         {
-            Bitmap newArea = new Bitmap(texture);
+            //DirectBitmap newArea = new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
 
-            foreach (Triangle tri in grid.Triangles)
+            using(Graphics g = Graphics.FromImage(drawArea.Bitmap))
             {
-                tri.Fill(newArea, lambert, lightColor, L);
+                g.DrawImage(texture.Bitmap, 0, 0);
             }
-            grid.Draw(newArea);
-            pictureBox1.Image = newArea;
-            pictureBox1.Refresh();
-            drawArea = newArea;
+            Parallel.ForEach(grid.Triangles, (tri) =>
+             {
+                 tri.Fill(drawArea, lambert, lightColor, L);
+             });
+            grid.Draw(drawArea);
+            pictureBox1.Image = drawArea.Bitmap;
+            pictureBox1.Invalidate();
         }
 
         void UpdateTriangles(Triangle[] tri)
         {
-            Bitmap newArea = new Bitmap(beforeMove);
+            DirectBitmap newArea = beforeMove.Copy();
             foreach (Triangle triangle in tri)
             {
                 triangle.Fill(newArea, lambert, lightColor, L);
             }
             grid.Draw(newArea);
-            pictureBox1.Image = newArea;
+            pictureBox1.Image = newArea.Bitmap;
             pictureBox1.Refresh();
-            drawArea = newArea;
-        }
-
-        Bitmap InitializeBitmap(Bitmap b)
-        {
-            Bitmap result = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            int width = b.Width;
-            int height = b.Height;
-            for(int i=0;i<result.Height;i++)
-            {
-                for(int j=0;j<result.Width;j++)
-                {
-                    Color color = b.GetPixel(j % width, i % height);
-                    result.SetPixel(j, i, color);
-                }
-            }
-            return result;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -160,10 +163,10 @@ namespace GK2
                 objectColor = newColor;
             }          
             grid.ChangeColor(objectColor);
-            UpdateArea();
+            radioButtonConstTexture.Checked = true;
         }
 
-        bool LoadImage(out Bitmap result)
+        bool LoadImage(out DirectBitmap result, int width, int height)
         {
             result = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -173,9 +176,10 @@ namespace GK2
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    radioButtonTexture.Checked = true;
                     string filePath = openFileDialog.FileName;
-                    result = new Bitmap(filePath);
+                    Bitmap bm = new Bitmap(filePath);
+                    bm = new Bitmap(bm, width, height);
+                    result = ConvertBitmap(bm);
                     return true;
                 }
             }
@@ -184,21 +188,36 @@ namespace GK2
 
         private void TextureLoad_Click(object sender, EventArgs e)
         {
-            Bitmap newTexture;
-            if(LoadImage(out newTexture))
+            DirectBitmap newTexture;
+            if(LoadImage(out newTexture, pictureBox1.Width, pictureBox1.Height))
             {
-                texture = InitializeBitmap(new Bitmap(newTexture, pictureBox1.Width, pictureBox1.Height));
-                radioButtonTexture.Checked = true;
+                texture = newTexture;
+                if(!radioButtonTexture.Checked)
+                {
+                    radioButtonTexture.Checked = true;
+                }
+                else
+                {
+                    UpdateArea();
+                }
+                
             }
         }
 
         private void normalMapLoad_Click(object sender, EventArgs e)
         {
-            Bitmap newNormalMap;
-            if(LoadImage(out newNormalMap))
+            DirectBitmap newNormalMap;
+            if(LoadImage(out newNormalMap, 300, 300))
             {
                 lambert.ChangeNormalMap(newNormalMap);
-                radioButtonNormalMap.Checked = true;
+                if (!radioButtonNormalMap.Checked)
+                {
+                    radioButtonNormalMap.Checked = true;
+                }
+                else
+                {
+                    UpdateArea();
+                }
             }
         }
 
@@ -257,6 +276,7 @@ namespace GK2
             {
                 objectsHaveColor = false;
                 grid.SwitchColor(objectsHaveColor);
+                UpdateArea();
             }
         }
 
@@ -279,6 +299,72 @@ namespace GK2
                 grid.SwitchColor(objectsHaveColor);
                 UpdateArea();
             }
+        }
+
+        double SpriralX(double fi, double a)
+        {
+            double radians = fi * Math.PI / 180f;
+            return a * fi * Math.Sin(radians) + pictureBox1.Width / 2f;
+        }
+
+        double SpiralY(double fi, double a)
+        {
+            double radians = fi * Math.PI / 180f;
+            return a * fi * Math.Cos(radians) + pictureBox1.Height / 2f;
+        }
+
+        private void animateButton_Click(object sender, EventArgs e)
+        {
+            lambert.startAnimation();
+            if (backgroundWorker1.IsBusy != true)
+                backgroundWorker1.RunWorkerAsync();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (backgroundWorker1.WorkerSupportsCancellation == true)
+                backgroundWorker1.CancelAsync();
+            lambert.endAnimation();
+            UpdateArea();
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            int delay = 100;
+            double fi = 1090;
+            double dfi = -3;
+            double h = 60;
+            double dh = -1;
+            while (!worker.CancellationPending)
+            {
+                fi += dfi;
+                h += dh;
+                double x = SpriralX(fi, 0.3);
+                double y = SpiralY(fi, 0.2);
+
+                lambert.ChangeLightPoint(new Vector3((int)x, (int)y,Math.Abs((int)h)));
+                UpdateArea();
+                if (h< 25)
+                {
+                    dh = -dh;
+                }
+                if (h>100)
+                {
+                    dh = -dh;
+                }
+                if (fi < -1090)
+                {
+                    dfi = -dfi;
+                }
+                if(fi > 1090)
+                {
+                    dfi = -dfi;
+                }
+
+                Thread.Sleep(delay);
+            }
+            e.Cancel = true;
         }
     }
 }
