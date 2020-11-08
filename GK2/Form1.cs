@@ -23,9 +23,10 @@ namespace GK2
         LambertColor lambert;
         Color objectColor;
         Vector3 lightColor;
-        Vector3 L;
+
         bool dragV;
         bool objectsHaveColor;
+        bool interpolation;
         public Form1()
         {
             dragV = false;
@@ -34,12 +35,12 @@ namespace GK2
             Bitmap bm = new Bitmap(Resources.Funny_Cat, pictureBox1.Width, pictureBox1.Height);
             texture = ConvertBitmap(bm);
             grid = new TriangleGrid(5, 5);
-            L = new Vector3(0, 0, 1);
             bm = new Bitmap(Resources.normal_map, 250, 250);
             lambert = new LambertColor(0.5, 0.5, 0, ConvertBitmap(bm), new Vector3(0, 0, 1));
             lightColor = new Vector3(1, 1, 1);
             objectColor = Color.White;
             objectsHaveColor = false;
+            interpolation = false;
             grid.CreateGrid(pictureBox1.Width, pictureBox1.Height, objectColor, objectsHaveColor);
             drawArea = new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
             pictureBox1.Image = drawArea.Bitmap;
@@ -64,8 +65,10 @@ namespace GK2
             {
                 if(!triangles.Contains(tri))
                 {
-                    tri.Fill(newArea, lambert, lightColor, L);
-                    tri.Draw(newArea);
+                    if (!interpolation)
+                        tri.Fill(newArea, lambert, lightColor);
+                    else
+                        tri.FillInterpolation(newArea, lambert, lightColor);
                 }
             }
             return newArea;
@@ -73,19 +76,19 @@ namespace GK2
 
         void UpdateArea()
         {
-            //DirectBitmap newArea = new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
-
             using(Graphics g = Graphics.FromImage(drawArea.Bitmap))
             {
                 g.DrawImage(texture.Bitmap, 0, 0);
             }
-            Parallel.ForEach(grid.Triangles, (tri) =>
-             {
-                 tri.Fill(drawArea, lambert, lightColor, L);
-             });
+            Parallel.ForEach(grid.Triangles, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (tri) =>
+            {
+                 if (!interpolation)
+                     tri.Fill(drawArea, lambert, lightColor);
+                 else
+                     tri.FillInterpolation(drawArea, lambert, lightColor);
+            });
             grid.Draw(drawArea);
-            pictureBox1.Image = drawArea.Bitmap;
-            pictureBox1.Invalidate();
+            pictureBox1.Refresh();
         }
 
         void UpdateTriangles(Triangle[] tri)
@@ -93,10 +96,17 @@ namespace GK2
             DirectBitmap newArea = beforeMove.Copy();
             foreach (Triangle triangle in tri)
             {
-                triangle.Fill(newArea, lambert, lightColor, L);
+                if (!interpolation)
+                    triangle.Fill(newArea, lambert, lightColor);
+                else
+                    triangle.FillInterpolation(newArea, lambert, lightColor);
             }
             grid.Draw(newArea);
-            pictureBox1.Image = newArea.Bitmap;
+
+            using(Graphics g = Graphics.FromImage(drawArea.Bitmap))
+            {
+                g.DrawImage(newArea.Bitmap, 0, 0);
+            }
             pictureBox1.Refresh();
         }
 
@@ -163,7 +173,10 @@ namespace GK2
                 objectColor = newColor;
             }          
             grid.ChangeColor(objectColor);
-            radioButtonConstTexture.Checked = true;
+            if (!radioButtonConstTexture.Checked)
+                radioButtonConstTexture.Checked = true;
+            else
+                UpdateArea();
         }
 
         bool LoadImage(out DirectBitmap result, int width, int height)
@@ -331,11 +344,10 @@ namespace GK2
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-            int delay = 100;
             double fi = 1090;
             double dfi = -3;
             double h = 60;
-            double dh = -1;
+            double dh = -Math.Abs((h / (fi / dfi)));
             while (!worker.CancellationPending)
             {
                 fi += dfi;
@@ -345,7 +357,7 @@ namespace GK2
 
                 lambert.ChangeLightPoint(new Vector3((int)x, (int)y,Math.Abs((int)h)));
                 UpdateArea();
-                if (h< 25)
+                if (h< 5)
                 {
                     dh = -dh;
                 }
@@ -353,7 +365,7 @@ namespace GK2
                 {
                     dh = -dh;
                 }
-                if (fi < -1090)
+                if (fi < 30)
                 {
                     dfi = -dfi;
                 }
@@ -361,10 +373,28 @@ namespace GK2
                 {
                     dfi = -dfi;
                 }
-
-                Thread.Sleep(delay);
             }
             e.Cancel = true;
+        }
+
+        private void interpolationFill_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = sender as RadioButton;
+            if (button.Checked)
+            {
+                interpolation = true;
+                UpdateArea();
+            }
+        }
+
+        private void normalFill_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = sender as RadioButton;
+            if (button.Checked)
+            {
+                interpolation = false;
+                UpdateArea();
+            }
         }
     }
 }

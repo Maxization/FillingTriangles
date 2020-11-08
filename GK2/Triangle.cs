@@ -192,6 +192,7 @@ namespace GK2
     {
         const int MAX = 1000;
         List<Edge> edges;
+        Vertex vA, vB, vC;
         public bool OwnColor { get; set; }
         public Color Color { get; set; }
         public Triangle(Vertex A, Vertex B, Vertex C, Color c, bool ownColor)
@@ -205,6 +206,9 @@ namespace GK2
             edges.Add(e3);
             Color = c;
             this.OwnColor = ownColor;
+            this.vA = A;
+            this.vB = B;
+            this.vC = C;
         }
 
         public bool Contain(Vertex v)
@@ -268,11 +272,110 @@ namespace GK2
                 e.Draw(b);
         }
 
-        public void Fill(DirectBitmap b, LambertColor lambert, Vector3 lightColor, Vector3 L)
+        private double CalculateArea(Point A, Point B, Point C)
+        {
+            return Math.Abs((B.X - A.X) * (C.Y - A.Y) - (B.Y - A.Y) * (C.X - A.X)) / 2f;
+        }
+
+        public void FillInterpolation(DirectBitmap b, LambertColor lambert, Vector3 lightColor)
+        {
+            if(OwnColor)
+            {
+                Fill(b, lambert, lightColor);
+                return;
+            }
+
+            EdgeTable ET = createET();
+            double area = CalculateArea(vA, vB, vC);
+            Color[] color = new Color[3];
+            Vertex[] vertices = new Vertex[] { vA, vB, vC };
+            for(int i=0;i<3;i++)
+            {
+                Color c = b.GetPixel(vertices[i].X, vertices[i].Y);
+                int R = lambert.MakeColor(c.R, lightColor.X, vertices[i].X, vertices[i].Y);
+                int G = lambert.MakeColor(c.G, lightColor.Y, vertices[i].X, vertices[i].Y);
+                int B = lambert.MakeColor(c.B, lightColor.Z, vertices[i].X, vertices[i].Y);
+                color[i] = Color.FromArgb(R, G, B);
+            }
+            
+            int y = 0;
+            for (int i = 0; i < MAX; i++)
+            {
+                if (ET[i] != null)
+                {
+                    y = i;
+                    break;
+                }
+            }
+            NodeAET AET = null;
+            while (AET != null || ET.Count != 0)
+            {
+                if (ET[y] != null)
+                {
+                    if (AET == null)
+                    {
+                        AET = ET[y];
+                    }
+                    else
+                    {
+                        AET.Add(ET[y]);
+                    }
+                    ET.Delete(y);
+                }
+
+                AET = AET.Sort();
+
+                NodeAET node1 = AET;
+                NodeAET node2 = AET.next;
+                while (node1 != null && node2 != null)
+                {
+                    int xMin = (int)node1.X;
+                    int xMax = (int)node2.X;
+                    for (int i = xMin; i <= xMax; i++)
+                    {
+                        double p1 = CalculateArea(new Point(i, y), vertices[0], vertices[1]);
+                        double p2 = CalculateArea(new Point(i, y), vertices[2], vertices[1]);
+                        double p3 = CalculateArea(new Point(i, y), vertices[2], vertices[0]);
+
+                        p1 /= area;
+                        p2 /= area;
+                        p3 /= area;
+
+                        int R = (int)(p1 * color[2].R + p2 * color[0].R + p3 * color[1].R);
+                        int G = (int)(p1 * color[2].G + p2 * color[0].G + p3 * color[1].G);
+                        int B = (int)(p1 * color[2].B + p2 * color[0].B + p3 * color[1].B);
+
+                        if (R > 255) R = 255;
+                        if (G > 255) G = 255;
+                        if (B > 255) B = 255;
+
+                        Color newColor = Color.FromArgb(R, G, B);
+                        b.SetPixel(i, y, newColor);
+                    }
+                    node1 = node2.next;
+                    if (node1 != null)
+                        node2 = node1.next;
+                }
+
+                y++;
+                AET = AET.Delete(y);
+
+                if (AET != null)
+                {
+                    AET.UpdateX();
+                }
+            }
+        }
+
+        public void Fill(DirectBitmap b, LambertColor lambert, Vector3 lightColor)
         {
             EdgeTable ET = createET();
 
             int y=0;
+            while(ET[y]!= null)
+            {
+                y++;
+            }
             for(int i=0;i<MAX;i++)
             {
                 if(ET[i] != null)
@@ -323,25 +426,6 @@ namespace GK2
                         Color newColor = Color.FromArgb(R, G, B);
                         b.SetPixel(i, y, newColor);
                     }
-
-                    //Parallel.For(xMin, xMax + 1, (x) =>
-                    //    {
-                    //        Color color;
-                    //        if (!OwnColor)
-                    //        {
-                    //            color = b.GetPixel(x, y);
-                    //        }
-                    //        else
-                    //        {
-                    //            color = Color;
-                    //        }
-                    //        int R = lambert.MakeColor(color.R, lightColor.X, x, y);
-                    //        int G = lambert.MakeColor(color.G, lightColor.Y, x, y);
-                    //        int B = lambert.MakeColor(color.B, lightColor.Z, x, y);
-
-                    //        Color newColor = Color.FromArgb(R, G, B);
-                    //        b.SetPixel(x, y, newColor);
-                    //    });
                     node1 = node2.next;
                     if (node1 != null)
                         node2 = node1.next;

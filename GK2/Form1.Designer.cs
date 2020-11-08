@@ -52,10 +52,10 @@
             this.animateButton = new System.Windows.Forms.Button();
             this.LightColorLabel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.normalFill = new System.Windows.Forms.RadioButton();
             this.interpolationFill = new System.Windows.Forms.RadioButton();
+            this.normalFill = new System.Windows.Forms.RadioButton();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -367,11 +367,6 @@
             this.label5.TabIndex = 9;
             this.label5.Text = "Light Color";
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.interpolationFill);
@@ -383,17 +378,6 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Fill Color";
             // 
-            // normalFill
-            // 
-            this.normalFill.AutoSize = true;
-            this.normalFill.Location = new System.Drawing.Point(7, 28);
-            this.normalFill.Name = "normalFill";
-            this.normalFill.Size = new System.Drawing.Size(58, 17);
-            this.normalFill.TabIndex = 0;
-            this.normalFill.TabStop = true;
-            this.normalFill.Text = "Normal";
-            this.normalFill.UseVisualStyleBackColor = true;
-            // 
             // interpolationFill
             // 
             this.interpolationFill.AutoSize = true;
@@ -401,9 +385,27 @@
             this.interpolationFill.Name = "interpolationFill";
             this.interpolationFill.Size = new System.Drawing.Size(83, 17);
             this.interpolationFill.TabIndex = 1;
-            this.interpolationFill.TabStop = true;
             this.interpolationFill.Text = "Interpolation";
             this.interpolationFill.UseVisualStyleBackColor = true;
+            this.interpolationFill.CheckedChanged += new System.EventHandler(this.interpolationFill_CheckedChanged);
+            // 
+            // normalFill
+            // 
+            this.normalFill.AutoSize = true;
+            this.normalFill.Checked = true;
+            this.normalFill.Location = new System.Drawing.Point(7, 28);
+            this.normalFill.Name = "normalFill";
+            this.normalFill.Size = new System.Drawing.Size(58, 17);
+            this.normalFill.TabIndex = 0;
+            this.normalFill.TabStop = true;
+            this.normalFill.Text = "Normal";
+            this.normalFill.UseVisualStyleBackColor = true;
+            this.normalFill.CheckedChanged += new System.EventHandler(this.normalFill_CheckedChanged);
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
             // Form1
             // 
@@ -415,7 +417,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "TrianglesFilling";
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
