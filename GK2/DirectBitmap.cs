@@ -1,4 +1,6 @@
-﻿using System;
+﻿//https://stackoverflow.com/questions/24701703/c-sharp-faster-alternatives-to-setpixel-and-getpixel-for-bitmaps-for-windows-f
+
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Drawing;
