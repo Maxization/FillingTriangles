@@ -40,7 +40,10 @@ namespace GK2
             Bitmap bm = new Bitmap(Resources.Funny_Cat, pictureBox1.Width, pictureBox1.Height);
             texture = ConvertBitmap(bm);
             bm = new Bitmap(Resources.normal_map, 250, 250);
-            lambert = new LambertColor(0.5, 0.5, 20, ConvertBitmap(bm), new Vector3(0, 0, 1));
+            int H = 200;
+            Vector3 K = new Vector3(-pictureBox1.Width / 2f, -pictureBox1.Height / 2f, H);
+            K.Normalize();
+            lambert = new LambertColor(0.5, 0.5, 20, ConvertBitmap(bm), new Vector3(0, 0, 1), K, H);
             lightColor = new Vector3(1, 1, 1);
             objectColor = Color.White;
             objectsHaveColor = false;
@@ -56,7 +59,6 @@ namespace GK2
             grid.CreateGrid(pictureBox1.Width, pictureBox1.Height, objectColor, objectsHaveColor);
             UpdateArea();
         }
-
         DirectBitmap ConvertBitmap(Bitmap b)
         {
             DirectBitmap dBm = new DirectBitmap(b.Width, b.Height);
@@ -67,7 +69,6 @@ namespace GK2
             }
             return dBm;
         }
-
         void UpdateArea()
         {
             using(Graphics g = Graphics.FromImage(drawArea.Bitmap))
@@ -366,6 +367,20 @@ namespace GK2
             NumericUpDown numeric = sender as NumericUpDown;
             M = (int)numeric.Value;
             CreateGrid(N, M);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox button = sender as CheckBox;
+            if(button.Checked)
+            {
+                lambert.Reflector = true;
+            }
+            else
+            {
+                lambert.Reflector = false;
+            }
+            UpdateArea();
         }
     }
 }

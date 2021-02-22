@@ -56,12 +56,13 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.interpolationFill = new System.Windows.Forms.RadioButton();
             this.normalFill = new System.Windows.Forms.RadioButton();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -74,8 +75,8 @@
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -124,9 +125,9 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 49.375F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.625F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 118F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 83F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 96F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 103F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 119F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 81F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 82F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(183, 555);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
@@ -326,13 +327,14 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.checkBox1);
             this.groupBox4.Controls.Add(this.button1);
             this.groupBox4.Controls.Add(this.animateButton);
             this.groupBox4.Controls.Add(this.LightColorLabel);
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Location = new System.Drawing.Point(3, 275);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(177, 77);
+            this.groupBox4.Size = new System.Drawing.Size(177, 113);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Light";
@@ -383,9 +385,9 @@
             // 
             this.groupBox5.Controls.Add(this.interpolationFill);
             this.groupBox5.Controls.Add(this.normalFill);
-            this.groupBox5.Location = new System.Drawing.Point(3, 358);
+            this.groupBox5.Location = new System.Drawing.Point(3, 394);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(177, 90);
+            this.groupBox5.Size = new System.Drawing.Size(177, 75);
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Fill Color";
@@ -414,45 +416,38 @@
             this.normalFill.UseVisualStyleBackColor = true;
             this.normalFill.CheckedChanged += new System.EventHandler(this.normalFill_CheckedChanged);
             // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.label6);
             this.groupBox6.Controls.Add(this.label1);
             this.groupBox6.Controls.Add(this.numericUpDown2);
             this.groupBox6.Controls.Add(this.numericUpDown1);
-            this.groupBox6.Location = new System.Drawing.Point(3, 454);
+            this.groupBox6.Location = new System.Drawing.Point(3, 475);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(177, 98);
+            this.groupBox6.Size = new System.Drawing.Size(177, 77);
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Net";
             // 
-            // numericUpDown1
+            // label6
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(45, 19);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(75, 20);
-            this.numericUpDown1.TabIndex = 0;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label6.Location = new System.Drawing.Point(13, 45);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(22, 20);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "M";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label1.Location = new System.Drawing.Point(13, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(20, 20);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "N";
             // 
             // numericUpDown2
             // 
@@ -477,25 +472,43 @@
             0});
             this.numericUpDown2.ValueChanged += new System.EventHandler(this.numericUpDown2_ValueChanged);
             // 
-            // label1
+            // numericUpDown1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(13, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 20);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "N";
+            this.numericUpDown1.Location = new System.Drawing.Point(45, 19);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(75, 20);
+            this.numericUpDown1.TabIndex = 0;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
-            // label6
+            // timer1
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label6.Location = new System.Drawing.Point(13, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(22, 20);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "M";
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(15, 90);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(69, 17);
+            this.checkBox1.TabIndex = 13;
+            this.checkBox1.Text = "Reflector";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // Form1
             // 
@@ -526,8 +539,8 @@
             this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -567,6 +580,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

@@ -12,23 +12,28 @@ namespace GK2
         public double Kd { get; set; }
         public double Ks { get; set; }
         public int M { get; set; }
-        Vector3 V, constN, constL;
+        public int H { get; set; }
+        Vector3 V, constN, constL , K;
         public DirectBitmap NormalMap { get; set; }
         public bool ConstantN { get; set; }
         bool animated;
+        public bool Reflector { get; set; }
         public Vector3 LightPoint { get; set; }
-        public LambertColor(double kd, double ks, int m, DirectBitmap normalMap, Vector3 V)
+        public LambertColor(double kd, double ks, int m, DirectBitmap normalMap, Vector3 V, Vector3 K, int H)
         {
             this.Kd = kd;
             this.Ks = ks;
             this.M = m;
             this.NormalMap = normalMap;
             this.V = V;
+            this.H = H;
             constN = new Vector3(0, 0, 1);
             constL = new Vector3(0, 0, 1);
             LightPoint = new Vector3(0, 0, 0);
+            this.K = K;
             ConstantN = false;
             animated = false;
+            Reflector = false;
         }
         Vector3 CreateL(int x, int y)
         {
@@ -59,9 +64,22 @@ namespace GK2
             double Ior = ObjColor.R / 255f;
             double Iog = ObjColor.G / 255f;
             double Iob = ObjColor.B / 255f;
+
             double IR = Kd * Il.X * Ior * Vector3.Dot(N, L) + Ks * Il.X * Ior * Math.Pow(Vector3.Dot(V, R), M);
             double IG = Kd * Il.Y * Iog * Vector3.Dot(N, L) + Ks * Il.Y * Iog * Math.Pow(Vector3.Dot(V, R), M);
             double IB = Kd * Il.Z * Iob * Vector3.Dot(N, L) + Ks * Il.Z * Iob * Math.Pow(Vector3.Dot(V, R), M);
+
+            if(Reflector)
+            {
+                Vector3 L2 = new Vector3(-x, -y, H);
+                L2.Normalize();
+
+                Vector3 Rr = 2 * Vector3.Dot(N, L2) * N - L2;
+                double IrlR = 1 * Math.Pow(Vector3.Dot(K, L2), 10); //red reflector color (light color)
+
+                double IrR = Kd * IrlR * Ior * Vector3.Dot(N, L2) + Ks * IrlR * Ior * Math.Pow(Vector3.Dot(V, Rr), M);
+                IR += IrR;
+            }
 
             if (IR < 0) IR = 0;
             if (IR > 1) IR = 1;
